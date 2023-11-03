@@ -1,6 +1,6 @@
 # Kubus
 
-Kubus is Kubernetes security scanner which written in Python Standard Library based on CIS benchmark.
+Kubus is Kubernetes security scanner which written in Python Standard Library based on CIS benchmark. This is just demo application for my personal projects.
 
 > ## Disclaimer
 > - This tool is non-commercial product
