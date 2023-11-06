@@ -1,9 +1,14 @@
+from typing import List, Dict, Any
+
+
 class KubusCISControls:
     def __init__(self):
         pass
 
     # DONE
-    def get_control_1_1(self, cni_file_path, etcd_path, certs_path):
+    def get_control_1_1(
+        self, cni_file_path: str, etcd_path: str, certs_path: str
+    ) -> List[Dict[str, Any]]:
         control = [
             {
                 "control_category": "control_plane_components",
@@ -199,7 +204,7 @@ class KubusCISControls:
         return control
 
     # DONE
-    def get_control_1_2(self):
+    def get_control_1_2(self) -> List[Dict[str, Any]]:
         control = [
             {
                 "control_category": "control_plane_components",
@@ -563,7 +568,7 @@ class KubusCISControls:
         return control
 
     # DONE
-    def get_control_1_3(self):
+    def get_control_1_3(self) -> List[Dict[str, Any]]:
         control = [
             {
                 "control_category": "control_plane_components",
@@ -645,7 +650,7 @@ class KubusCISControls:
         return control
 
     # DONE
-    def get_control_1_4(self):
+    def get_control_1_4(self) -> List[Dict[str, Any]]:
         control = [
             {
                 "control_category": "control_plane_components",
@@ -673,7 +678,7 @@ class KubusCISControls:
         return control
 
     # DONE
-    def get_control_2(self):
+    def get_control_2(self) -> List[Dict[str, Any]]:
         control = [
             {
                 "control_category": "etcd",
@@ -770,7 +775,7 @@ class KubusCISControls:
         return control
 
     # DONE
-    def get_control_3_1(self):
+    def get_control_3_1(self) -> List[Dict[str, Any]]:
         control = [
             {
                 "control_category": "control_plane_configuration",
@@ -804,7 +809,7 @@ class KubusCISControls:
         return control
 
     # DONE
-    def get_control_3_2(self):
+    def get_control_3_2(self) -> List[Dict[str, Any]]:
         control = [
             {
                 "control_category": "control_plane_configuration",
@@ -830,8 +835,11 @@ class KubusCISControls:
 
     # DONE
     def get_control_4_1(
-        self, kubelet_service_path, kubelet_config_path, kubelet_lib_config_path
-    ):
+        self,
+        kubelet_service_path: str,
+        kubelet_config_path: str,
+        kubelet_lib_config_path: str,
+    ) -> List[Dict[str, Any]]:
         control = [
             {
                 "control_category": "worker_nodes",
@@ -928,7 +936,7 @@ class KubusCISControls:
         return control
 
     # DONE
-    def get_control_4_2(self):
+    def get_control_4_2(self) -> List[Dict[str, Any]]:
         control = [
             {
                 "control_category": "worker_nodes",

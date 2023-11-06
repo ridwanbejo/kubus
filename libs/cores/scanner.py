@@ -1,3 +1,5 @@
+from typing import List, Dict, Any
+
 from ..utils.commands import (
     get_dir_owner_group,
     get_dir_permission,
@@ -9,10 +11,12 @@ from .benchmarker import KubusCISBenchmark
 
 
 class KubusScanner:
-    def __init__(self, cni_file_path=None, distribution="standard"):
+    def __init__(
+        self, cni_file_path: str = None, distribution: str = "standard"
+    ) -> None:
         self.cis_benchmark = KubusCISBenchmark(cni_file_path, distribution)
 
-    def run(self):
+    def run(self) -> None:
         master_node_controls = self.cis_benchmark.get_master_node_controls()
 
         self.evaluate(master_node_controls)
@@ -21,7 +25,7 @@ class KubusScanner:
 
         self.evaluate(worker_node_controls)
 
-    def evaluate(self, controls):
+    def evaluate(self, controls: Dict[str, Any]) -> None:
         for control in controls:
             if control["control_item"] is None:
                 print(
@@ -139,7 +143,7 @@ class KubusScanner:
                         )
                         # print(action_result)
 
-    def evaluate_multi_line(self, action_result, control_value):
+    def evaluate_multi_line(self, action_result: Any, control_value: str) -> bool:
         action_result_count = len(action_result)
 
         counter = 0
@@ -153,7 +157,7 @@ class KubusScanner:
         else:
             return False
 
-    def action(self, control):
+    def action(self, control: Dict[str, Any]) -> Any:
         action_type = control["action_type"]
         control_item = control["control_item"]
 
@@ -172,7 +176,7 @@ class KubusScanner:
 
         return result
 
-    def get_param(self, action_result, param_name):
+    def get_param(self, action_result: Any, param_name: str) -> List[str]:
         params = action_result.split(" --")
         param = [x for x in params if param_name in x][0]
 

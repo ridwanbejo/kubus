@@ -1,13 +1,15 @@
+from typing import List, Dict, Any
+
 from .controls import KubusCISControls
 
 
 class KubusCISBenchmark:
-    def __init__(self, cni_file_path, distribution):
+    def __init__(self, cni_file_path: str, distribution: str) -> None:
         self.cni_file_path = cni_file_path
         self.set_config(distribution)
         self.kubus_ci_controls = KubusCISControls()
 
-    def set_config(self, distribution):
+    def set_config(self, distribution: str) -> None:
         if distribution == "standard":
             self.library_path = "/var/lib"
             self.certs_path = "/etc/kubernetes/pki"
@@ -23,7 +25,7 @@ class KubusCISBenchmark:
             self.kubelet_config_path = "/etc/kubernetes/kubelet.conf"
             self.kubelet_lib_config_path = "/var/lib/kubelet/config.yaml"
 
-    def get_master_node_controls(self):
+    def get_master_node_controls(self) -> List[Dict[str, Any]]:
         etcd_path = self.library_path + "/etcd"
 
         master_node_audit_controls = self.kubus_ci_controls.get_control_1_1(
@@ -39,7 +41,7 @@ class KubusCISBenchmark:
 
         return master_node_audit_controls
 
-    def get_worker_node_controls(self):
+    def get_worker_node_controls(self) -> List[Dict[str, Any]]:
         worker_node_audit_controls = self.kubus_ci_controls.get_control_4_1(
             self.kubelet_service_path,
             self.kubelet_config_path,
