@@ -12,18 +12,30 @@ from .benchmarker import KubusCISBenchmark
 
 class KubusScanner:
     def __init__(
-        self, cni_file_path: str = None, distribution: str = "standard"
+        self,
+        cni_file_path: str = None,
+        distribution: str = "standard",
+        node_target: str = "worker",
     ) -> None:
         self.cis_benchmark = KubusCISBenchmark(cni_file_path, distribution)
+        self.node_target = node_target
 
     def run(self) -> None:
-        master_node_controls = self.cis_benchmark.get_master_node_controls()
+        if self.node_target == "master":
+            master_node_controls = self.cis_benchmark.get_master_node_controls()
 
-        self.evaluate(master_node_controls)
+            self.evaluate(master_node_controls)
 
-        worker_node_controls = self.cis_benchmark.get_worker_node_controls()
+            print("Scanning on master node is finish....")
+        elif self.node_target == "worker":
+            worker_node_controls = self.cis_benchmark.get_worker_node_controls()
 
-        self.evaluate(worker_node_controls)
+            self.evaluate(worker_node_controls)
+
+            print("Scanning on worker node is finish....")
+
+        else:
+            print("Can't run scanner on unknown node target ...")
 
     def evaluate(self, controls: Dict[str, Any]) -> None:
         for control in controls:
