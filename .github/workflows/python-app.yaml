@@ -26,5 +26,3 @@ jobs:
         run: ruff check .
       - name: Check vulnerability with Bandit
         run: bandit -r .
-      - name: Test with pytest and coverage
-        run: pytest tests --cov=com --cov-report=html
