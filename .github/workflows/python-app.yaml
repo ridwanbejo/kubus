@@ -1,4 +1,4 @@
-name: Plausible-py
+name: Kubus
 
 on:
   pull_request:
