@@ -1,4 +1,5 @@
 from typing import List, Dict, Any
+from pprint import pprint
 
 from ..utils.commands import (
     get_dir_owner_group,
@@ -19,6 +20,7 @@ class KubusScanner:
     ) -> None:
         self.cis_benchmark = KubusCISBenchmark(cni_file_path, distribution)
         self.node_target = node_target
+        self.scan_result_counter = {"passed": 0, "failed": 0, "skipped": 0}
 
     def run(self) -> None:
         if self.node_target == "master":
@@ -26,11 +28,15 @@ class KubusScanner:
 
             self.evaluate(master_node_controls)
 
+            pprint(self.scan_result_counter)
+
             print("Scanning on master node is finish....")
         elif self.node_target == "worker":
             worker_node_controls = self.cis_benchmark.get_worker_node_controls()
 
             self.evaluate(worker_node_controls)
+
+            pprint(self.scan_result_counter)
 
             print("Scanning on worker node is finish....")
 
@@ -38,6 +44,7 @@ class KubusScanner:
             print("Can't run scanner on unknown node target ...")
 
     def evaluate(self, controls: Dict[str, Any]) -> None:
+        # pprint(controls)
         for control in controls:
             if control["control_item"] is None:
                 print(
@@ -45,16 +52,20 @@ class KubusScanner:
                         control["control_id"]
                     )
                 )
+
+                self.collect_scan_result("skipped")
             else:
                 control_value = control["control_value"]
                 action_operator = control["action_operator"]
                 action_result = self.action(control)
 
-                if isinstance(type(action_result), str):
+                if isinstance(action_result, str):
                     if control_value is not None:
                         if action_operator == "in":
                             if control_value in action_result:
                                 print("{0}: PASSED".format(control["control_id"]))
+
+                                self.collect_scan_result("passed")
                             else:
                                 print(
                                     "{0}: FAILED. Reason: {1} failed to find control value '{2}' in {3} process".format(
@@ -64,10 +75,13 @@ class KubusScanner:
                                         control["control_item"],
                                     )
                                 )
-                                # print(action_result)
+
+                                self.collect_scan_result("failed")
                         elif action_operator == "not_in":
                             if control_value not in action_result:
                                 print("{0}: PASSED".format(control["control_id"]))
+
+                                self.collect_scan_result("passed")
                             else:
                                 print(
                                     "{0}: FAILED. Reason: {1} found control value '{2}' in {3} process".format(
@@ -77,7 +91,8 @@ class KubusScanner:
                                         control["control_item"],
                                     )
                                 )
-                                # print(action_result)
+
+                                self.collect_scan_result("failed")
                         elif action_operator == "in_param":
                             if control_value["param_name"] in action_result:
                                 control_param_value = self.get_param(
@@ -86,6 +101,8 @@ class KubusScanner:
 
                                 if control_value["param_value"] in control_param_value:
                                     print("{0}: PASSED".format(control["control_id"]))
+
+                                    self.collect_scan_result("passed")
                                 else:
                                     print(
                                         "{0}: FAILED. Reason: {1} failed to find control value '{2}' in {3} process".format(
@@ -95,7 +112,8 @@ class KubusScanner:
                                             control["control_item"],
                                         )
                                     )
-                                    # print(control_param_value)
+
+                                    self.collect_scan_result("failed")
                             else:
                                 print(
                                     "{0}: FAILED. Reason: Couldn't find param name '{1}' in '{2}' process".format(
@@ -104,7 +122,8 @@ class KubusScanner:
                                         control["control_item"],
                                     )
                                 )
-                                # print(action_result)
+
+                                self.collect_scan_result("failed")
                         elif action_operator == "not_in_param":
                             if control_value["param_name"] in action_result:
                                 control_param_value = self.get_param(
@@ -116,6 +135,8 @@ class KubusScanner:
                                     not in control_param_value
                                 ):
                                     print("{0}: PASSED".format(control["control_id"]))
+
+                                    self.collect_scan_result("passed")
                                 else:
                                     print(
                                         "{0}: FAILED. Reason: {1} found control value '{2}' for {3} process".format(
@@ -125,7 +146,8 @@ class KubusScanner:
                                             control["control_item"],
                                         )
                                     )
-                                    # print(control_param_value)
+
+                                    self.collect_scan_result("failed")
                             else:
                                 print(
                                     "{0}: FAILED. Reason: Couldn't find param name '{1}' in {2} process".format(
@@ -134,17 +156,23 @@ class KubusScanner:
                                         control["control_item"],
                                     )
                                 )
-                                # print(action_result)
+
+                                self.collect_scan_result("failed")
                     else:
                         print(
                             "{0}: SKIPPED. Reason: Unsupported control".format(
                                 control["control_id"]
                             )
                         )
-                elif isinstance(type(action_result), list):
+
+                        self.collect_scan_result("skipped")
+                elif isinstance(action_result, list):
+
                     eval_result = self.evaluate_multi_line(action_result, control_value)
                     if eval_result is True:
                         print("{0}: PASSED".format(control["control_id"]))
+
+                        self.collect_scan_result("passed")
                     else:
                         print(
                             "{0}: FAILED. Reason: Couldn't evaluate multiple control values '{1}' in {2} ".format(
@@ -153,7 +181,8 @@ class KubusScanner:
                                 control["control_item"],
                             )
                         )
-                        # print(action_result)
+
+                        self.collect_scan_result("failed")
 
     def evaluate_multi_line(self, action_result: Any, control_value: str) -> bool:
         action_result_count = len(action_result)
@@ -193,3 +222,8 @@ class KubusScanner:
         param = [x for x in params if param_name in x][0]
 
         return param
+
+    def collect_scan_result(self, result_type: str) -> None:
+        self.scan_result_counter[result_type] = (
+            self.scan_result_counter[result_type] + 1
+        )
