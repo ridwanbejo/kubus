@@ -71,33 +71,11 @@ class KubusScanner:
                                 self.print_pass_scan_result(control)
                             else:
                                 self.print_fail_scan_result(control)
-
-                                # print(
-                                #     "{0}: FAILED. Reason: {1} failed to find control value '{2}' in {3} process".format(
-                                #         control["control_id"],
-                                #         control["action_type"],
-                                #         control["control_value"],
-                                #         control["control_item"],
-                                #     )
-                                # )
-
-                                # self.collect_scan_result("failed")
                         elif action_operator == "not_in":
                             if control_value not in action_result:
                                 self.print_pass_scan_result(control)
                             else:
                                 self.print_fail_scan_result(control)
-
-                                # print(
-                                #     "{0}: FAILED. Reason: {1} found control value '{2}' in {3} process".format(
-                                #         control["control_id"],
-                                #         control["action_type"],
-                                #         control["control_value"],
-                                #         control["control_item"],
-                                #     )
-                                # )
-
-                                # self.collect_scan_result("failed")
                         elif action_operator == "in_param":
                             if control_value["param_name"] in action_result:
                                 control_param_value = self.get_param(
@@ -108,29 +86,8 @@ class KubusScanner:
                                     self.print_pass_scan_result(control)
                                 else:
                                     self.print_fail_scan_result(control)
-
-                                    # print(
-                                    #     "{0}: FAILED. Reason: {1} failed to find control value '{2}' in {3} process".format(
-                                    #         control["control_id"],
-                                    #         control["action_type"],
-                                    #         control["control_value"],
-                                    #         control["control_item"],
-                                    #     )
-                                    # )
-
-                                    # self.collect_scan_result("failed")
                             else:
                                 self.print_fail_scan_result(control)
-
-                                # print(
-                                #     "{0}: FAILED. Reason: Couldn't find param name '{1}' in '{2}' process".format(
-                                #         control["control_id"],
-                                #         control_value["param_name"],
-                                #         control["control_item"],
-                                #     )
-                                # )
-
-                                # self.collect_scan_result("failed")
                         elif action_operator == "not_in_param":
                             if control_value["param_name"] in action_result:
                                 control_param_value = self.get_param(
@@ -144,29 +101,8 @@ class KubusScanner:
                                     self.print_pass_scan_result(control)
                                 else:
                                     self.print_fail_scan_result(control)
-
-                                    # print(
-                                    #     "{0}: FAILED. Reason: {1} found control value '{2}' for {3} process".format(
-                                    #         control["control_id"],
-                                    #         control["action_type"],
-                                    #         control["control_value"],
-                                    #         control["control_item"],
-                                    #     )
-                                    # )
-
-                                    # self.collect_scan_result("failed")
                             else:
                                 self.print_fail_scan_result(control)
-
-                                # print(
-                                #     "{0}: FAILED. Reason: Couldn't find param name '{1}' in {2} process".format(
-                                #         control["control_id"],
-                                #         control_value["param_name"],
-                                #         control["control_item"],
-                                #     )
-                                # )
-
-                                # self.collect_scan_result("failed")
                     else:
                         print(
                             self.CYELLOW
@@ -184,16 +120,6 @@ class KubusScanner:
                         self.print_pass_scan_result(control)
                     else:
                         self.print_fail_scan_result(control)
-
-                        # print(
-                        #     "{0}: FAILED. Reason: Couldn't evaluate multiple control values '{1}' in {2} ".format(
-                        #         control["control_id"],
-                        #         control["control_value"],
-                        #         control["control_item"],
-                        #     )
-                        # )
-
-                        # self.collect_scan_result("failed")
 
     def evaluate_multi_line(self, action_result: Any, control_value: str) -> bool:
         action_result_count = len(action_result)
