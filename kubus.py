@@ -7,7 +7,7 @@ def main():
     parser = argparse.ArgumentParser(
         prog="Kubus",
         description="Kubus is Kubernetes security scanner based on CIS Benchmark",
-        epilog="This is just a demo project for PyCon ID 2023",
+        epilog="This is just a demo project for PyCon ID 2023 in Bandung, Indonesia",
     )
     parser.add_argument(
         "--dist",
